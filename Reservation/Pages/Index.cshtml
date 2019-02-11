@@ -1,0 +1,33 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h3>@Model.Message</h3>
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Room Booked</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reservation in Model.Reservations)
+            {
+            <tr>
+                <td>@reservation.ReservationId</td>
+                <td>@reservation.ClientName</td>
+                <td>@reservation.Location</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@reservation.ReservationId">Edit</a>
+                    <input type="submit" asp-page-handler="delete" asp-route-id="@reservation.ReservationId" value="Delete" />
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <a asp-page="./Create">Create New Room Reservation</a>
+</form>
