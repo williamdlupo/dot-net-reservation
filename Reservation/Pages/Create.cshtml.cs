@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,14 @@ namespace Reservation.Pages
     public class CreateModel : PageModel
     {
         static HttpClient client = new HttpClient();
+        public IConfiguration Configuration { get; }
 
-        public CreateModel()
+        public CreateModel(IConfiguration configuration)
         {
+            Configuration = configuration;
             if (client.BaseAddress is null)
             {
-                client.BaseAddress = new Uri("https://localhost:44304/");
+                client.BaseAddress = new Uri(Configuration["ApiBaseAddress"]);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));

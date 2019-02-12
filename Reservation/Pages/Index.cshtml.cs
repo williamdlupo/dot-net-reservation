@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 
 namespace Reservation.Pages
 {
@@ -12,16 +13,20 @@ namespace Reservation.Pages
     {
         static HttpClient client = new HttpClient();
 
+        public IConfiguration Configuration { get; }
+
         public IList<ReservationObj> Reservations { get; private set; }
 
         [TempData]
         public string Message { get; set; }
 
-        public IndexModel()
+        public IndexModel(IConfiguration configuration)
         {
+            Configuration = configuration;
+
             if (client.BaseAddress is null)
             {
-                client.BaseAddress = new Uri("https://localhost:44304/");
+                client.BaseAddress = new Uri(Configuration["ApiBaseAddress"]);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));

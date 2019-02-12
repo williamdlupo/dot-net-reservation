@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,11 +12,15 @@ namespace Reservation.Pages
     {
         static HttpClient client = new HttpClient();
 
-        public EditModel()
+        public IConfiguration Configuration { get; }
+
+        public EditModel(IConfiguration configuration)
         {
+            Configuration = configuration;
+
             if (client.BaseAddress is null)
             {
-                client.BaseAddress = new Uri("https://localhost:44304/");
+                client.BaseAddress = new Uri(Configuration["ApiBaseAddress"]);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
