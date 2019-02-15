@@ -10,21 +10,13 @@ namespace Reservation.Pages
 {
     public class EditModel : PageModel
     {
-        static HttpClient client = new HttpClient();
-
+        private readonly IHttpClientFactory _clientFactory;
         public IConfiguration Configuration { get; }
 
-        public EditModel(IConfiguration configuration)
+        public EditModel(IConfiguration configuration, IHttpClientFactory clientFactory)
         {
             Configuration = configuration;
-
-            if (client.BaseAddress is null)
-            {
-                client.BaseAddress = new Uri(Configuration["ApiBaseAddress"]);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("application/json"));
-            }
+            _clientFactory = clientFactory;
         }
 
         [TempData]
@@ -39,8 +31,10 @@ namespace Reservation.Pages
             {
                 return NotFound();
             }
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/reservation/{id}");
+            var client = _clientFactory.CreateClient("webApi");
+            HttpResponseMessage response = await client.SendAsync(request);
 
-            HttpResponseMessage response = await client.GetAsync($"api/reservation/{id}");
             if (response.IsSuccessStatusCode)
             {
                 Reservation = await response.Content.ReadAsAsync<ReservationObj>();
@@ -57,7 +51,9 @@ namespace Reservation.Pages
 
             try
             {
+                var client = _clientFactory.CreateClient("webApi");
                 HttpResponseMessage response = await client.PutAsJsonAsync($"api/reservation", Reservation);
+
                 if (response.IsSuccessStatusCode)
                 {
                     Message = $"Reservation for {Reservation.ClientName} has been updated to {Reservation.Location}";
@@ -81,7 +77,9 @@ namespace Reservation.Pages
 
         private async Task<bool> ReservationExists(int id)
         {
-            HttpResponseMessage response = await client.GetAsync($"api/reservation/{id}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/reservation/{id}");
+            var client = _clientFactory.CreateClient("webApi");
+            HttpResponseMessage response = await client.SendAsync(request);
 
             return response.IsSuccessStatusCode;
         }

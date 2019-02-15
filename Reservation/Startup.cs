@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Reservation
 {
@@ -31,6 +27,12 @@ namespace Reservation
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddHttpClient("webApi", c =>
+            {
+                c.BaseAddress = new Uri(Configuration["ApiBaseAddress"]);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(10));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

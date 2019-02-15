@@ -1,30 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Reservation.Pages
 {
     public class CreateModel : PageModel
     {
-        static HttpClient client = new HttpClient();
+        private readonly IHttpClientFactory _clientFactory;
         public IConfiguration Configuration { get; }
 
-        public CreateModel(IConfiguration configuration)
+        public CreateModel(IConfiguration configuration, IHttpClientFactory clientFactory)
         {
             Configuration = configuration;
-            if (client.BaseAddress is null)
-            {
-                client.BaseAddress = new Uri(Configuration["ApiBaseAddress"]);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("application/json"));
-            }
+            _clientFactory = clientFactory;
         }
 
         [TempData]
@@ -47,7 +39,9 @@ namespace Reservation.Pages
 
             try
             {
+                var client = _clientFactory.CreateClient("webApi");
                 HttpResponseMessage response = await client.PostAsJsonAsync($"api/reservation", Reservation);
+
                 if (response.IsSuccessStatusCode)
                 {
                     Reservation = await response.Content.ReadAsAsync<ReservationObj>();
@@ -74,12 +68,12 @@ namespace Reservation.Pages
         {
             IList<ReservationObj> Reservations = new List<ReservationObj>();
 
-            HttpResponseMessage response = await client.GetAsync($"api/reservation/{id}");
-            if (response.IsSuccessStatusCode)
-            {
-                Reservations = await response.Content.ReadAsAsync<IList<ReservationObj>>();
-            }
-            return Reservations.Any(e => e.ReservationId == id);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/reservation/{id}");
+            var client = _clientFactory.CreateClient("webApi");
+            HttpResponseMessage response = await client.SendAsync(request);
+
+            return response.IsSuccessStatusCode;
+
         }
     }
 }

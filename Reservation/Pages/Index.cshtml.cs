@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
 
 namespace Reservation.Pages
 {
     public class IndexModel : PageModel
     {
-        static HttpClient client = new HttpClient();
+        private readonly IHttpClientFactory _clientFactory;
 
         public IConfiguration Configuration { get; }
 
@@ -20,22 +18,19 @@ namespace Reservation.Pages
         [TempData]
         public string Message { get; set; }
 
-        public IndexModel(IConfiguration configuration)
+        public IndexModel(IConfiguration configuration, IHttpClientFactory clientFactory)
         {
             Configuration = configuration;
 
-            if (client.BaseAddress is null)
-            {
-                client.BaseAddress = new Uri(Configuration["ApiBaseAddress"]);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("application/json"));
-            }
+            _clientFactory = clientFactory;
         }
 
         public async Task OnGetAsync()
         {
-            HttpResponseMessage response = await client.GetAsync($"api/reservation");
+            var request = new HttpRequestMessage(HttpMethod.Get, "api/reservation");
+            var client = _clientFactory.CreateClient("webApi");
+            HttpResponseMessage response = await client.SendAsync(request);
+
             if (response.IsSuccessStatusCode)
             {
                 Reservations = await response.Content.ReadAsAsync<IList<ReservationObj>>();
@@ -44,7 +39,10 @@ namespace Reservation.Pages
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            HttpResponseMessage response = await client.DeleteAsync($"api/reservation/{id}");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/reservation/{id}");
+            var client = _clientFactory.CreateClient("webApi");
+            HttpResponseMessage response = await client.SendAsync(request);
+
             if (response.IsSuccessStatusCode)
             {
                 Message = $"Reservation Removed";
