@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Reservation.Pages
 {
+    [Authorize]
     public class CreateModel : PageModel
     {
         private readonly IHttpClientFactory _clientFactory;
@@ -27,6 +28,7 @@ namespace Reservation.Pages
 
         public IActionResult OnGetAsync(int? id)
         {
+            Reservation = new ReservationObj { ClientName = User.Identity.Name };
             return Page();
         }
 

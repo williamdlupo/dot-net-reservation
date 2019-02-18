@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Reservation.Pages
 {
+    [Authorize]
     public class EditModel : PageModel
     {
         private readonly IHttpClientFactory _clientFactory;

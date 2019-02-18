@@ -13,7 +13,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Name</label>
-                <input asp-for="Reservation.ClientName" class="form-control" />
+                <input readonly asp-for="Reservation.ClientName" class="form-control" />
                 <span asp-validation-for="Reservation.ClientName" class="text-danger"></span>
             </div>
             <div class="form-group">

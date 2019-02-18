@@ -14,7 +14,7 @@
             <input type="hidden" asp-for="Reservation.ReservationId" />
             <div class="form-group">
                 <label class="control-label">Name</label>
-                <input asp-for="Reservation.ClientName" class="form-control" />
+                <input asp-for="Reservation.ClientName" class="form-control" readonly />
                 <span asp-validation-for="Reservation.ClientName" class="text-danger"></span>
                 <label class="control-label">Location</label>
                 <input asp-for="Reservation.Location" class="form-control" />

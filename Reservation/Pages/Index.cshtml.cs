@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
@@ -47,6 +48,20 @@ namespace Reservation.Pages
             {
                 Message = $"Reservation Removed";
             }
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnGetTwitterLogin()
+        {
+            return new ChallengeResult("Twitter",
+                new AuthenticationProperties { RedirectUri = "/" });
+        }
+
+        public async Task<IActionResult> OnGetLogoutAsync()
+        {
+            await HttpContext.SignOutAsync("Cookies",
+                new AuthenticationProperties { RedirectUri = "/" });
 
             return RedirectToPage();
         }

@@ -13,7 +13,7 @@
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
               crossorigin="anonymous"
-              integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE="/>
+              integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" />
     </environment>
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -26,6 +26,18 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div>
+                        <text style="margin: 15px">Suh @User.Identity.Name!</text>
+                        <a asp-page-handler="Logout">Log Out</a>
+                    </div>
+
+                }
+                else
+                {
+                    <a asp-page-handler="TwitterLogin">Log In </a>
+                }
             </div>
         </nav>
     </header>

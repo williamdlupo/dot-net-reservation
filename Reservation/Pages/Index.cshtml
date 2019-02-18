@@ -17,17 +17,21 @@
         <tbody>
             @foreach (var reservation in Model.Reservations)
             {
-            <tr>
-                <td>@reservation.ReservationId</td>
-                <td>@reservation.ClientName</td>
-                <td>@reservation.Location</td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@reservation.ReservationId">Edit</a>
-                    <input type="submit" asp-page-handler="delete" asp-route-id="@reservation.ReservationId" value="Delete" />
-                </td>
-            </tr>
+                <tr>
+                    <td>@reservation.ReservationId</td>
+                    <td>@reservation.ClientName</td>
+                    <td>@reservation.Location</td>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <td>
+                            <a asp-page="./Edit" asp-route-id="@reservation.ReservationId">Edit</a>
+                            <input type="submit" asp-page-handler="delete" asp-route-id="@reservation.ReservationId" value="Delete" />
+                        </td>
+                    }
+                </tr>
             }
         </tbody>
     </table>
-    <a asp-page="./Create">Create New Room Reservation</a>
+    @if (User.Identity.IsAuthenticated)
+    {<a asp-page="./Create">Create New Room Reservation</a>}
 </form>
