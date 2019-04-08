@@ -30,7 +30,7 @@ namespace Reservation
                 })
                 .AddCookie(options =>
                     {
-                        options.LoginPath = "/LogIn";
+                        options.LoginPath = "/";
                     })
                 .AddTwitter(options =>
                     {
@@ -49,8 +49,7 @@ namespace Reservation
             {
                 c.BaseAddress = new Uri(Configuration["ApiBaseAddress"]);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
-            })
-                .SetHandlerLifetime(TimeSpan.FromMinutes(10));
+            }); 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

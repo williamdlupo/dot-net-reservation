@@ -4,7 +4,17 @@
     ViewData["Title"] = "Home page";
 }
 
-<h3>@Model.Message</h3>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="col-md-12">
+        <a class="btn btn-success float-right" style="margin:1rem;" asp-page="./Create">Create New Room Reservation</a>
+    </div>
+}
+
+@if (Model.Message != null)
+{
+    <div class="alert alert-info row" role="alertdialog"><text class="text-center alert-heading">@Model.Message</text></div>
+}
 <form method="post">
     <table class="table">
         <thead>
@@ -12,6 +22,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Room Booked</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -23,15 +34,27 @@
                     <td>@reservation.Location</td>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <td>
-                            <a asp-page="./Edit" asp-route-id="@reservation.ReservationId">Edit</a>
-                            <input type="submit" asp-page-handler="delete" asp-route-id="@reservation.ReservationId" value="Delete" />
-                        </td>
+                        @if (User.Identity.Name.Equals(reservation.ClientName))
+                        {
+                            <td>
+                                <a class="btn btn-info" asp-page="./Edit" asp-route-id="@reservation.ReservationId">Edit</a>
+                                <input class="btn btn-danger" type="submit" asp-page-handler="delete" asp-route-id="@reservation.ReservationId" value="Delete" />
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <button class="btn btn-info" disabled>Edit</button>
+                                <input class="btn btn-danger" disabled type="submit" asp-page-handler="delete" asp-route-id="@reservation.ReservationId" value="Delete" />
+                            </td>
+                        }
+                    }
+                    else
+                    {
+                        <td></td>
                     }
                 </tr>
             }
         </tbody>
     </table>
-    @if (User.Identity.IsAuthenticated)
-    {<a asp-page="./Create">Create New Room Reservation</a>}
 </form>
