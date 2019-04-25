@@ -4,57 +4,53 @@
     ViewData["Title"] = "Home page";
 }
 
-@if (User.Identity.IsAuthenticated)
+@if (Model.Message != null)
 {
-    <div class="col-md-12">
-        <a class="btn btn-success float-right" style="margin:1rem;" asp-page="./Create">Create New Room Reservation</a>
+    <div class="alert alert-dismissible alert-success" role="alertdialog">
+        <h5 class="text-center alert-heading">@Model.Message</h5>
     </div>
 }
 
-@if (Model.Message != null)
+<div class="d-flex justify-content-start">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a class="btn btn-primary" style="margin:1rem;" asp-page="./Create"><b>+ Book Room</b></a>
+    }
+</div>
+
+@if (User.Identity.IsAuthenticated)
 {
-    <div class="alert alert-info row" role="alertdialog"><text class="text-center alert-heading">@Model.Message</text></div>
-}
-<form method="post">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Room Booked</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var reservation in Model.Reservations)
-            {
-                <tr>
-                    <td>@reservation.ReservationId</td>
-                    <td>@reservation.ClientName</td>
-                    <td>@reservation.Location</td>
-                    @if (User.Identity.IsAuthenticated)
-                    {
+    <form method="post">
+        <table class="table">
+            <tbody>
+                @foreach (var reservation in Model.Reservations)
+                {
+                    <tr>
+                        <td class="text-center">@reservation.ClientName</td>
+                        <td class="text-center">@reservation.Location</td>
+
                         @if (User.Identity.Name.Equals(reservation.ClientName))
                         {
-                            <td>
+                            <td class="d-flex justify-content-center">
                                 <a class="btn btn-info" asp-page="./Edit" asp-route-id="@reservation.ReservationId">Edit</a>
                                 <input class="btn btn-danger" type="submit" asp-page-handler="delete" asp-route-id="@reservation.ReservationId" value="Delete" />
                             </td>
                         }
                         else
                         {
-                            <td>
+                            <td class="d-flex justify-content-center">
                                 <button class="btn btn-info" disabled>Edit</button>
                                 <input class="btn btn-danger" disabled type="submit" asp-page-handler="delete" asp-route-id="@reservation.ReservationId" value="Delete" />
                             </td>
                         }
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-</form>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+}
+else
+{
+    <h1 class="font-weight-normal text-center">Room Booker 3000</h1>
+    <p class="text-center">Sign in to get started</p>
+}

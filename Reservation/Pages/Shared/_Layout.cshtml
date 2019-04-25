@@ -24,11 +24,10 @@
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Reservation System AF</a>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <div>
-                        <text style="margin: 15px">Suh @User.Identity.Name!</text>
-                        <a asp-page-handler="Logout">Log Out</a>
+                    <div class="d-flex flex-column">
+                        <text class="align-self-center">Suh @User.Identity.Name!</text>
+                        <a class="align-self-center" asp-page-handler="Logout">Log Out</a>
                     </div>
-
                 }
                 else
                 {
@@ -44,11 +43,6 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2019 - Reservation - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
